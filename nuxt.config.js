@@ -1,3 +1,5 @@
+// eslint-disable-next-line nuxt/no-cjs-in-config
+const path = require('path')
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -15,10 +17,14 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+  css: [
+    '@/assets/sass/main.sass'
+  ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [
+    { src: '@/plugins/icons', ssr: true }
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -35,5 +41,20 @@ export default {
   modules: [],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: {
+    extend (config, ctx) {
+      // ...
+      const svgRule = config.module.rules.find(rule => rule.test.test('.svg'))
+      svgRule.exclude = [path.resolve(__dirname, 'assets/svg')]
+      // Includes /icons/svg for svg-sprite-loader
+      config.module.rules.push({
+        test: /\.svg$/,
+        include: [path.resolve(__dirname, 'assets/svg')],
+        loader: 'svg-sprite-loader',
+        options: {
+          symbolId: 'icon-[name]'
+        }
+      })
+    }
+  },
 }
