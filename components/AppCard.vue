@@ -1,14 +1,14 @@
 <template>
   <div class="app-card">
     <div class="app-card-image">
-      <img :src="product.src" :alt="product.title "/>
+      <img :src="product.src" :alt="product.name"/>
     </div>
     <div class="app-card-data">
-      <div class="app-card-title">{{ product.title }}</div>
+      <div class="app-card-title">{{ product.name }}</div>
       <div class="app-card-description">{{ product.description }}</div>
       <div class="app-card-cost">{{ product.cost }} руб.</div>
     </div>
-    <div class="app-card-btn-remove">
+    <div class="app-card-btn-remove" @click="removeProduct">
       <svg-icon icon-class="delete" />
     </div>
   </div>
@@ -21,9 +21,13 @@ export default {
     product: {
       type: Object,
       default: () => {}
+    },
+  },
+  methods: {
+    removeProduct() {
+      this.$emit('removeProduct')
     }
   }
-
 }
 </script>
 
@@ -33,7 +37,10 @@ export default {
     background: #FFFEFB
     box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.04), 0px 6px 10px rgba(0, 0, 0, 0.02)
     border-radius: 4px
-    flex-basis: 332px
+    height: 423px
+    flex-basis: 48%
+    min-width: 180px
+    max-width: 332px
     display: flex
     flex-direction: column
     font-family: 'Source Sans Pro'
@@ -41,17 +48,18 @@ export default {
       .app-card-btn-remove
         opacity: 1
     &-image
-      width: 332px
-      height: 200px
-      border-radius: 4px 4px 0px 0px
-      overflow: hidden
-      display: flex
-      justify-content: center
-      align-items: center
+      position: relative
+      &::after
+        display: block
+        content: ''
+        padding-bottom: 56.25%
       img
-        min-width: 100%
-        min-height: 100%
-        flex-shrink: 0
+        position: absolute
+        left: 0
+        top: 0
+        width: 100%
+        height: 100%
+        border-radius: 4px 4px 0 0
     &-data
       display: flex
       flex-grow: 1
@@ -59,14 +67,22 @@ export default {
       padding: 16px
       box-sizing: border-box
       grid-gap: 16px
+      height: 100%
+      max-height: 248px
     &-title
       font-weight: 600
       font-size: 20px
       line-height: 25px
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: pre-wrap
     &-description
       font-weight: 400
       font-size: 16px
       line-height: 20px
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: pre-wrap
     &-cost
       margin: 16px 0 8px
       font-weight: 600
@@ -90,4 +106,17 @@ export default {
       svg
         width: 16px
         height: 16px
+
+  @media (max-width: 991px)
+    .app-card
+      flex-basis: 32%
+
+  @media (max-width: 667px)
+    .app-card
+      flex-basis: 48%
+
+  @media (max-width: 575px)
+    .app-card
+      flex-basis: 100%
+
 </style>
