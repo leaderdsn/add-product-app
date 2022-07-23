@@ -1,92 +1,71 @@
 <template>
   <div class="app-products">
     <div class="app-products-panel">
-      <button class="app-btn"> По умолчанию <span class="angle-down"></span></button>
+      <app-drop-down />
     </div>
     <div class="app-products-list">
-      <AppCard v-for="product in products" :key="product.id" :product="product"/>
+      <AppCard v-for="product in products" :key="product.id" :product="product" @removeProduct="removeProduct(product.id)"/>
     </div>
   </div>
 </template>
 
 <script>
 import AppCard from '@/components/AppCard.vue'
+import AppDropDown from '@/components/AppDropDown.vue'
 export default {
   name: "AppProducts",
   components: {
     AppCard,
+    AppDropDown,
   },
-  data() {
-    return {
-      products: [
-        {
-          id: 1,
-          title: 'Наименование товара',
-          description: 'Довольно-таки интересное описание товара в несколько строк. Довольно-таки интересное описание товара в несколько строк',
-          src: 'https://catherineasquithgallery.com/uploads/posts/2021-02/1612606898_85-p-telezhka-na-zelenom-fone-155.png',
-          cost: '10 000'
-        },
-        {
-          id: 2,
-          title: 'Наименование товара',
-          description: 'Довольно-таки интересное описание товара в несколько строк. Довольно-таки интересное описание товара в несколько строк',
-          src: 'https://catherineasquithgallery.com/uploads/posts/2021-02/1612606898_85-p-telezhka-na-zelenom-fone-155.png',
-          cost: '10 000'
-        },
-        {
-          id: 3,
-          title: 'Наименование товара',
-          description: 'Довольно-таки интересное описание товара в несколько строк. Довольно-таки интересное описание товара в несколько строк',
-          src: 'https://catherineasquithgallery.com/uploads/posts/2021-02/1612606898_85-p-telezhka-na-zelenom-fone-155.png',
-          cost: '10 000'
-        },
-        {
-          id: 4,
-          title: 'Наименование товара',
-          description: 'Довольно-таки интересное описание товара в несколько строк. Довольно-таки интересное описание товара в несколько строк',
-          src: 'https://catherineasquithgallery.com/uploads/posts/2021-02/1612606898_85-p-telezhka-na-zelenom-fone-155.png',
-          cost: '10 000'
-        },
-        {
-          id: 5,
-          title: 'Наименование товара',
-          description: 'Довольно-таки интересное описание товара в несколько строк. Довольно-таки интересное описание товара в несколько строк',
-          src: 'https://catherineasquithgallery.com/uploads/posts/2021-02/1612606898_85-p-telezhka-na-zelenom-fone-155.png',
-          cost: '10 000'
-        },
-      ]
-    }
+  props: {
+    products: {
+      type: Array,
+      default: () => [],
+    },
   },
+  methods: {
+    removeProduct(id) {
+      this.$emit('removeProduct', id)
+    },
+  }
 }
 </script>
 
 <style lang="sass" scoped>
   .app-products
     display: flex
-    flex-grow: 1
+    width: calc(100% - 348px)
+    margin-left: 348px
     grid-gap: 16px
     flex-direction: column
+    position: relative
     &-panel
+      position: relative
+      background: #FFFFFF
       display: flex
+      width: 100%
+      align-items: flex-end
       justify-content: flex-end
-      button
-        display: flex
-        grid-gap: 5px
-        align-items: center
-        .angle-down
-          border-bottom: 1px solid #B4B4B4
-          border-right: 1px solid #B4B4B4
-          transform: rotate(45deg)
-          width: 4.59px
-          height: 4.59px
-          box-sizing: border-box
-          transition: 0.3s
-          &:hover
-            border-color: #3F3F3F
-            cursor: pointer
     &-list
       display: flex
-      flex-grow: 1
       grid-gap: 16px
       flex-wrap: wrap
+
+  @media (max-width: 991px)
+    .app-products
+      margin-left: 0px
+      width: 100%
+      &-panel
+        position: relative
+        right: 0
+        height: auto
+        width: 100%
+      &-list
+        margin-top: 0
+
+  @media (max-width: 575px)
+    .app-products
+      &-list
+        justify-content: center
 </style>
