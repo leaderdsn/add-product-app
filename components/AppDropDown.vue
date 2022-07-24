@@ -21,6 +21,7 @@ export default {
       nameDropDown: 'По умолчанию',
       contentDropDown: [
         'По умолчанию',
+        'По наименованию',
         'По цене min',
         'По цене max'
       ]
@@ -31,8 +32,9 @@ export default {
       this.isDropDownShow = !this.isDropDownShow
     },
     selectItem(e) {
-      this.nameDropDown = e.target.innerHTML
       this.isDropDownShow = false
+      this.nameDropDown = e.target.innerHTML
+      this.$emit('selectItem', e.target.innerHTML)
     },
   }
 }
@@ -40,7 +42,7 @@ export default {
 
 <style lang="sass" scoped>
   .app-dropdown
-    width: 120px
+    width: max-content
     background: #FFFEFB
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1)
     border-radius: 4px
@@ -80,13 +82,13 @@ export default {
           margin-top: 5px
           transform: rotate(-135deg)
       &-list
-        width: 120px
+        width: 100%
         padding: 0
         margin: 0
         border-top: 1px solid #B4B4B4
         border-radius: 0 0 4px 4px
         position: absolute
-        bottom: -108px
+        bottom: -145px
         left: 0
         z-index: 1
         background: #FFFEFB
@@ -106,5 +108,6 @@ export default {
           &:last-child
             border-radius: 0 0 4px 4px
           &:hover
-            background: #EEEEEE
+            background: #7BAE73
+            color: #FFFFFF
 </style>
