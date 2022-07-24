@@ -2,8 +2,17 @@
   <div class="index-page">
     <div class="container">
       <AppMobileMenu v-if="isMobileWidth" @showSidebar="showSidebar" />
-      <AppSidebar :is-mobile-width="isMobileWidth" :sidebar-show="sidebarShow" @addProduct="addProduct" @hiddenSidebar='hiddenSidebar' />
-      <AppProducts :products="products" @removeProduct="removeProduct" />
+      <AppSidebar
+        :is-mobile-width="isMobileWidth"
+        :sidebar-show="sidebarShow"
+        @addProduct="addProduct"
+        @hiddenSidebar='hiddenSidebar'
+      />
+      <AppProducts
+        :products="filteredProducts"
+        @removeProduct="removeProduct"
+        @selectItem="selectItem"
+      />
     </div>
   </div>
 </template>
@@ -19,6 +28,8 @@ export default {
     return {
       isMobileWidth: false,
       sidebarShow: false,
+      typeSort: 'По умолчанию',
+      isLoading: false,
       window: {
         width: 0,
         height: 0,
@@ -26,40 +37,69 @@ export default {
       products: [
         {
           id: '1',
-          name: 'Наименование товара',
+          name: 'Наименование товара 1',
           description: 'Довольно-таки интересное описание товара в несколько строк. Довольно-таки интересное описание товара в несколько строк',
-          src: 'https://catherineasquithgallery.com/uploads/posts/2021-02/1612606898_85-p-telezhka-na-zelenom-fone-155.png',
-          cost: '10 000'
+          src: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+          cost: '12000'
         },
         {
           id: '2',
-          name: 'Наименование товара',
+          name: 'Наименование товара 2',
           description: 'Довольно-таки интересное описание товара в несколько строк. Довольно-таки интересное описание товара в несколько строк',
-          src: 'https://catherineasquithgallery.com/uploads/posts/2021-02/1612606898_85-p-telezhka-na-zelenom-fone-155.png',
-          cost: '10 000'
+          src: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+          cost: '5000'
         },
         {
           id: '3',
-          name: 'Наименование товара',
+          name: 'Наименование товара 3',
           description: 'Довольно-таки интересное описание товара в несколько строк. Довольно-таки интересное описание товара в несколько строк',
-          src: 'https://catherineasquithgallery.com/uploads/posts/2021-02/1612606898_85-p-telezhka-na-zelenom-fone-155.png',
-          cost: '10 000'
+          src: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+          cost: '3000'
         },
         {
           id: '4',
-          name: 'Наименование товара',
+          name: 'Наименование товара 4',
           description: 'Довольно-таки интересное описание товара в несколько строк. Довольно-таки интересное описание товара в несколько строк',
-          src: 'https://catherineasquithgallery.com/uploads/posts/2021-02/1612606898_85-p-telezhka-na-zelenom-fone-155.png',
-          cost: '10 000'
+          src: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+          cost: '8000'
         },
         {
           id: '5',
-          name: 'Наименование товара',
+          name: 'Наименование товара 5',
           description: 'Довольно-таки интересное описание товара в несколько строк. Довольно-таки интересное описание товара в несколько строк',
-          src: 'https://catherineasquithgallery.com/uploads/posts/2021-02/1612606898_85-p-telezhka-na-zelenom-fone-155.png',
-          cost: '10 000'
+          src: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+          cost: '10000'
         },
       ]
+    }
+  },
+  computed: {
+    filteredProducts() {
+      const { products, typeSort } = this
+      let sortedProducts = products
+
+      if (typeSort === 'По цене min') {
+        sortedProducts = sortedProducts.sort((a,b) => {
+          return a.cost - b.cost
+        })
+      } else if (typeSort === 'По цене max') {
+        sortedProducts = sortedProducts.sort((a,b) => {
+          return b.cost - a.cost
+        })
+      } else if (typeSort === 'По наименованию') {
+        sortedProducts = sortedProducts.sort((a,b) => {
+          const fa = a.name.toLowerCase()
+          const fb = b.name.toLowerCase()
+          if (fa < fb) {
+            return -1
+          }
+          if (fa > fb) {
+            return 1
+          }
+          return 0
+        })
+      }
+      return sortedProducts
     }
   },
   mounted() {
@@ -70,14 +110,17 @@ export default {
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {
+    selectItem(item) {
+      this.typeSort = item
+    },
     showSidebar() {
       this.sidebarShow = true
     },
     hiddenSidebar() {
       this.sidebarShow = false
     },
-    async addProduct(product) {
-      await this.products.push(product)
+    addProduct(product) {
+      this.products.push(product)
     },
     removeProduct(id) {
       this.products = this.products.filter((item) => {
@@ -108,11 +151,6 @@ export default {
     grid-gap: 16px
     padding: 32px
     box-sizing: border-box
-
-// @media (max-width: 1439px)
-//   .index-page
-//     .container
-//       flex-grow: 1
 
 @media (max-width: 991px)
   .container

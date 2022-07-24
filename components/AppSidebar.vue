@@ -24,10 +24,11 @@
       <label class="form-textfield">
         Цена товара
         <input
-          v-model="form.cost"
+          v-model="cost"
           type="text"
           placeholder="Введите цену товара"
           onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"
+          @blur="thousandSeparatorBlur"
           @change="thousandSeparator"
         />
         <small v-if="errors.cost !== null">{{ errors.cost }}</small>
@@ -59,12 +60,16 @@ export default {
         src: null,
         cost: null,
       },
+      cost: '',
     }
   },
   methods: {
     thousandSeparator(e) {
+      this.form.cost = e.target.value
+    },
+    thousandSeparatorBlur(e) {
       const str = e.target.value
-      this.form.cost = str.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+      this.cost = str.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
     },
     hiddenSidebar() {
       this.$emit('hiddenSidebar', false)
@@ -93,6 +98,7 @@ export default {
         this.form.id = this.GUID
         this.$emit('addProduct', this.form)
         this.form = {}
+        this.cost = ''
       }
 
       this.errors = {
