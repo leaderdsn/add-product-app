@@ -1,10 +1,15 @@
 <template>
   <div class="app-products">
     <div class="app-products-panel">
-      <app-drop-down />
+      <app-drop-down @selectItem="selectItem" />
     </div>
     <div class="app-products-list">
-      <AppCard v-for="product in products" :key="product.id" :product="product" @removeProduct="removeProduct(product.id)"/>
+      <AppCard
+        v-for="product in products"
+        :key="product.id"
+        :product="product"
+        @removeProduct="removeProduct(product.id)"
+      />
     </div>
   </div>
 </template>
@@ -28,6 +33,9 @@ export default {
     removeProduct(id) {
       this.$emit('removeProduct', id)
     },
+    selectItem(item){
+      this.$emit('selectItem', item)
+    }
   }
 }
 </script>
