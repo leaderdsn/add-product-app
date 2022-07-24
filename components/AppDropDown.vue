@@ -2,24 +2,25 @@
   <div class="app-dropdown">
     <button class="app-dropdown-btn">
       <span class="app-dropdown-btn-content">
-        {{ nameDropDown }}
+        {{ sortKey }}
         <span class="app-dropdown-btn-angle-down" :class="{'app-dropdown-btn-angle-down--selected': isDropDownShow }" @click="dropDownShow"></span>
       </span>
       <ul v-if="isDropDownShow" class="app-dropdown-btn-list">
-        <li v-for="item in contentDropDown" :key="item" @click.stop="selectItem">{{ item }}</li>
+        <li v-for="item in listKey" :key="item" @click.stop="selectItem">{{ item }}</li>
       </ul>
     </button>
   </div>
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
   name: 'AppDropDown',
   data() {
     return {
       isDropDownShow: false,
-      nameDropDown: 'По умолчанию',
-      contentDropDown: [
+      sortKey: 'По умолчанию',
+      listKey: [
         'По умолчанию',
         'По наименованию',
         'По цене min',
@@ -28,13 +29,15 @@ export default {
     }
   },
   methods: {
+    ...mapMutations({ sortProducts: 'localStorage/sortProducts' }),
     dropDownShow() {
       this.isDropDownShow = !this.isDropDownShow
     },
     selectItem(e) {
+      const keyValue = e.target.innerHTML
       this.isDropDownShow = false
-      this.nameDropDown = e.target.innerHTML
-      this.$emit('selectItem', e.target.innerHTML)
+      this.sortKey = keyValue
+      this.sortProducts(keyValue)
     },
   }
 }
@@ -42,7 +45,7 @@ export default {
 
 <style lang="sass" scoped>
   .app-dropdown
-    width: max-content
+    width: 140px
     background: #FFFEFB
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1)
     border-radius: 4px
@@ -105,6 +108,7 @@ export default {
           display: flex
           padding: 0px 16px
           box-sizing: border-box
+          white-space: nowrap
           &:last-child
             border-radius: 0 0 4px 4px
           &:hover

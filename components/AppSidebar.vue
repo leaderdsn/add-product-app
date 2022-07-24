@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
   name: 'AppSidebar',
   props: {
@@ -64,6 +65,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations({ addProduct: 'localStorage/addProduct' }),
     thousandSeparator(e) {
       this.form.cost = e.target.value
     },
@@ -96,7 +98,7 @@ export default {
       if (name && src && cost) {
         this.createNewUUID()
         this.form.id = this.GUID
-        this.$emit('addProduct', this.form)
+        this.addProduct(this.form)
         this.form = {}
         this.cost = ''
       }

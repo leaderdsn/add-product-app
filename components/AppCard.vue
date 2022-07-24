@@ -9,13 +9,14 @@
       <div class="app-card-description">{{ product.description }}</div>
       <div class="app-card-cost">{{ thousandSeparator }} руб.</div>
     </div>
-    <div class="app-card-btn-remove" @click="removeProduct">
+    <div class="app-card-btn-remove" @click="removeProduct(product.id)">
       <svg-icon icon-class="delete" />
     </div>
   </div>
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import AppSpinner from '@/components/AppSpinner.vue'
 export default {
   name: 'AppCard',
@@ -41,6 +42,7 @@ export default {
     await this.loadImage(this.product.src)
   },
   methods: {
+    ...mapMutations({ removeProduct: 'localStorage/removeProduct' }),
     async loadImage(src) {
       this.isLoading = true
       const notFoundImage = 'https://avatars.mds.yandex.net/i?id=9ff166a0628906bb1acb5b3f20031f9d-5485004-images-thumbs&n=13'
@@ -77,9 +79,6 @@ export default {
         xhr.send();
       })
     },
-    removeProduct() {
-      this.$emit('removeProduct')
-    }
   }
 }
 </script>
@@ -97,6 +96,7 @@ export default {
     display: flex
     flex-direction: column
     font-family: 'Source Sans Pro'
+    color: #3F3F3F
     &:hover
       .app-card-btn-remove
         opacity: 1
@@ -109,7 +109,7 @@ export default {
       img
         position: absolute
         left: 0
-        top: 0
+        top: 0px
         width: 100%
         height: 100%
         border-radius: 4px 4px 0 0

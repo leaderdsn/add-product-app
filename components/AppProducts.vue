@@ -1,20 +1,20 @@
 <template>
   <div class="app-products">
     <div class="app-products-panel">
-      <app-drop-down @selectItem="selectItem" />
+      <app-drop-down />
     </div>
     <div class="app-products-list">
       <AppCard
         v-for="product in products"
         :key="product.id"
         :product="product"
-        @removeProduct="removeProduct(product.id)"
       />
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import AppCard from '@/components/AppCard.vue'
 import AppDropDown from '@/components/AppDropDown.vue'
 export default {
@@ -23,20 +23,10 @@ export default {
     AppCard,
     AppDropDown,
   },
-  props: {
-    products: {
-      type: Array,
-      default: () => [],
-    },
+  computed: {
+    ...mapGetters({ products: 'localStorage/getProducts' }),
   },
-  methods: {
-    removeProduct(id) {
-      this.$emit('removeProduct', id)
-    },
-    selectItem(item){
-      this.$emit('selectItem', item)
-    }
-  }
+  methods: {}
 }
 </script>
 
