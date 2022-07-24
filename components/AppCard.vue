@@ -1,12 +1,13 @@
 <template>
-  <div class="app-card">
+  <app-spinner v-if="isLoading" />
+  <div v-else class="app-card">
     <div class="app-card-image">
-      <img :src="product.src" :alt="product.name"/>
+      <img :src="srcImg" :alt="product.name"/>
     </div>
     <div class="app-card-data">
       <div class="app-card-title">{{ product.name }}</div>
       <div class="app-card-description">{{ product.description }}</div>
-      <div class="app-card-cost">{{ product.cost }} руб.</div>
+      <div class="app-card-cost">{{ thousandSeparator }} руб.</div>
     </div>
     <div class="app-card-btn-remove" @click="removeProduct">
       <svg-icon icon-class="delete" />
@@ -15,15 +16,67 @@
 </template>
 
 <script>
+import AppSpinner from '@/components/AppSpinner.vue'
 export default {
   name: 'AppCard',
+  components: { AppSpinner },
   props: {
     product: {
       type: Object,
       default: () => {}
     },
   },
+  data() {
+    return {
+      isLoading: true,
+      srcImg: null,
+    }
+  },
+  computed: {
+    thousandSeparator() {
+      return this.product.cost.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+    },
+  },
+  async mounted() {
+    await this.loadImage(this.product.src)
+  },
   methods: {
+    async loadImage(src) {
+      this.isLoading = true
+      const notFoundImage = 'https://avatars.mds.yandex.net/i?id=9ff166a0628906bb1acb5b3f20031f9d-5485004-images-thumbs&n=13'
+      await this.httpGet(`${src}`)
+        .then(() => {
+          this.srcImg = src
+          this.isLoading = false
+        })
+        .catch(() => {
+          this.srcImg = notFoundImage
+          this.isLoading = false
+        })
+    },
+    httpGet(url) {
+      return new Promise(function(resolve, reject) {
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+
+        xhr.onload = function() {
+          if (this.status === 200) {
+            resolve(this.response);
+          } else {
+            const error = new Error(this.statusText);
+            error.code = this.status;
+            reject(error);
+          }
+        };
+
+        xhr.onerror = function() {
+          reject(new Error("Network Error"));
+        };
+
+        xhr.send();
+      })
+    },
     removeProduct() {
       this.$emit('removeProduct')
     }
@@ -103,6 +156,7 @@ export default {
       justify-content: center
       opacity: 0
       transition: 0.3s
+      cursor: pointer
       svg
         width: 16px
         height: 16px
