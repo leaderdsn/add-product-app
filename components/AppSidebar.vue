@@ -6,42 +6,49 @@
       </button>
       Добавление товара
     </h1>
-    <form class="form" @submit="onSubmit">
-      <label class="form-textfield">
-        Наименование товара
-        <input v-model="form.name" placeholder="Введите наименование товара" type="text"/>
-        <small v-if="errors.name !== null">{{ errors.name }}</small>
-      </label>
-      <label class="form-textfield">
-        Введите описание товара
-        <textarea v-model="form.description" placeholder="Введите описание товара"></textarea>
-      </label>
-      <label class="form-textfield">
-        Ссылка на изображение товара
-        <input v-model="form.src" type="text" placeholder="Введите ссылку"/>
-        <small v-if="errors.src !== null">{{ errors.src }}</small>
-      </label>
-      <label class="form-textfield">
-        Цена товара
+    <form class="form" @submit.prevent="onSubmit">
+      <div class="form-group">
+        <label class="control-label required" for="name">Наименование товара</label>
+        <input v-model="form.name" type="text" name="name" placeholder="Введите наименование товара" class="form-control" :class="{'is-invalid': $v.form.name.$error}">
+        <small v-if="$v.form.name.$error && !$v.form.name.required" class="invalid-feedback"> Поле является обязательным </small>
+        <small v-if="$v.form.name.$error && !$v.form.name.minLength" class="invalid-feedback"> Длина наименование не может быть меньше 3-х </small>
+      </div>
+      <div class="form-group">
+        <label class="control-label" for="description">Введите описание товара</label>
+        <textarea v-model="form.description" name="description" placeholder="Введите описание товара" maxlength="1000" class="form-control"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="control-label required" for="url">Ссылка на изображение товара</label>
+        <input v-model="form.url" type="text" name="url" placeholder="Введите ссылку" class="form-control" :class="{'is-invalid': $v.form.url.$error}">
+        <small v-if="$v.form.url.$error && !$v.form.url.required" class="invalid-feedback"> Поле является обязательным </small>
+        <small v-if="$v.form.url.$error && !$v.form.url.url" class="invalid-feedback"> Некоректный URL </small>
+      </div>
+      <div class="form-group">
+        <label class="control-label required" for="cost">Цена товара</label>
         <input
-          v-model="cost"
+          v-model.number="form.cost"
           type="text"
+          name="cost"
           placeholder="Введите цену товара"
+          class="form-control"
+          :class="{'is-invalid': $v.form.cost.$error}"
           onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"
-          @blur="thousandSeparatorBlur"
           @change="thousandSeparator"
-        />
-        <small v-if="errors.cost !== null">{{ errors.cost }}</small>
-      </label>
-      <button class="app-btn-primary form-btn" type="submit">Добавить товар</button>
+        >
+        <small v-if="$v.form.cost.$error && !$v.form.cost.required" class="invalid-feedback"> Поле является обязательным </small>
+      </div>
+      <button class="app-btn-primary form-btn" type="submit" :disabled="invalid">Добавить товар</button>
     </form>
   </div>
 </template>
 
 <script>
 import { mapMutations } from 'vuex'
+import { validationMixin } from 'vuelidate'
+import { required, minLength, url } from 'vuelidate/lib/validators'
 export default {
   name: 'AppSidebar',
+  mixins: [validationMixin],
   props: {
     isMobileWidth: {
       type: Boolean,
@@ -56,22 +63,30 @@ export default {
     return {
       form: {},
       GUID: null,
-      errors: {
-        name: null,
-        src: null,
-        cost: null,
-      },
-      cost: '',
+    }
+  },
+  validations: {
+    form: {
+      name: { required, minLength: minLength(3) },
+      url: { required, url },
+      cost: { required },
+    }
+  },
+  computed: {
+    invalid() {
+      let res = true
+      for (const i in this.form) {
+        if(this.form[i] !== '' ) {
+          res = false
+        }
+      }
+      return res
     }
   },
   methods: {
     ...mapMutations({ addProduct: 'localStorage/addProduct' }),
     thousandSeparator(e) {
-      this.form.cost = e.target.value
-    },
-    thousandSeparatorBlur(e) {
-      const str = e.target.value
-      this.cost = str.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+      this.form.cost = e.target.value.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
     },
     hiddenSidebar() {
       this.$emit('hiddenSidebar', false)
@@ -93,30 +108,14 @@ export default {
         return newGuid;
     },
     onSubmit(e) {
-      e.preventDefault();
-      const { name, src, cost } = this.form
-      if (name && src && cost) {
+      this.$v.form.$touch()
+      if (!this.$v.form.$invalid) {
         this.createNewUUID()
         this.form.id = this.GUID
         this.addProduct(this.form)
         this.form = {}
-        this.cost = ''
-      }
-
-      this.errors = {
-        name: null,
-        src: null,
-        cost: null,
-      };
-
-      if (!name) {
-        this.errors.name = 'Требуется указать наименование товара'
-      }
-      if (!src) {
-        this.errors.src = 'Требуется указать ссылку на изображение товара'
-      }
-      if (!cost) {
-        this.errors.cost = 'Требуется указать стоимость товара'
+        this.$v.form.$reset()
+        alert('Товар добавлен успешно!')
       }
     },
   }
@@ -150,7 +149,8 @@ export default {
     border-radius: 4px
     padding: 24px
     box-sizing: border-box
-    &-textfield
+    &-group
+      position: relative
       display: flex
       flex-grow: 1
       flex-basis: 100%
@@ -172,16 +172,15 @@ export default {
     line-height: 13px
     letter-spacing: -0.02em
     color: #49485E
-
-  small
-    position: absolute
-    bottom: -14px
-    font-family: 'Source Sans Pro'
-    font-weight: 400
-    font-size: 8px
-    line-height: 10px
-    letter-spacing: -0.02em
-    color: #FF8484
+    display: flex
+    flex-wrap: nowrap
+    &.required
+      &:after
+        content: ""
+        width: 4px
+        height: 4px
+        background: #FF8484
+        border-radius: 4px
 
   input,
   textarea
@@ -190,13 +189,12 @@ export default {
     border-radius: 4px
     border: 0
     height: 36px
-    text-indent: 16px
     font-family: 'Source Sans Pro'
     font-weight: 400
     font-size: 12px
     line-height: 15px
     color: #B4B4B4
-    padding: 0
+    padding: 10px 16px
     box-sizing: border-box
     &:focus
       outline: none
@@ -206,6 +204,27 @@ export default {
     padding-top: 16px
     box-sizing: border-box
     resize: none
+  .invalid-feedback
+    position: absolute
+    bottom: -14px
+    font-family: 'Source Sans Pro'
+    font-weight: 400
+    font-size: 8px
+    line-height: 10px
+    letter-spacing: -0.02em
+    color: #FF8484
+
+  .is-invalid
+    border: 1px solid #FF8484
+
+  .form-required
+    // position: absolute
+    width: 4px
+    height: 4px
+    // left: 151px;
+    // top: 48px;
+    background: #FF8484
+    border-radius: 4px
 
   @media (max-width: 991px)
     .app-sidebar

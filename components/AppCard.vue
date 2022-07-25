@@ -2,7 +2,7 @@
   <app-spinner v-if="isLoading" />
   <div v-else class="app-card">
     <div class="app-card-image">
-      <img :src="srcImg" :alt="product.name"/>
+      <img :src="urlImg" :alt="product.name"/>
     </div>
     <div class="app-card-data">
       <div class="app-card-title">{{ product.name }}</div>
@@ -30,7 +30,7 @@ export default {
   data() {
     return {
       isLoading: true,
-      srcImg: null,
+      urlImg: null,
     }
   },
   computed: {
@@ -39,20 +39,20 @@ export default {
     },
   },
   async mounted() {
-    await this.loadImage(this.product.src)
+    await this.loadImage(this.product.url)
   },
   methods: {
     ...mapMutations({ removeProduct: 'localStorage/removeProduct' }),
-    async loadImage(src) {
+    async loadImage(url) {
       this.isLoading = true
       const notFoundImage = 'https://avatars.mds.yandex.net/i?id=9ff166a0628906bb1acb5b3f20031f9d-5485004-images-thumbs&n=13'
-      await this.httpGet(`${src}`)
+      await this.httpGet(`${url}`)
         .then(() => {
-          this.srcImg = src
+          this.urlImg = url
           this.isLoading = false
         })
         .catch(() => {
-          this.srcImg = notFoundImage
+          this.urlImg = notFoundImage
           this.isLoading = false
         })
     },
