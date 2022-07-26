@@ -56,20 +56,3 @@ export default {
   }
 }
 </script>
-
-<style lang="sass" scoped>
-.index-page
-  width: 100%
-  .container
-    display: flex
-    width: 100%
-    max-width: 1440px
-    margin: 0 auto
-    grid-gap: 16px
-    padding: 32px
-    box-sizing: border-box
-
-@media (max-width: 991px)
-  .container
-    padding: 20px
-</style>

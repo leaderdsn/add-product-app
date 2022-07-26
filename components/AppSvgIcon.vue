@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  name: 'SvgIcon',
+  name: 'AppSvgIcon',
   props: {
     iconClass: {
       type: String,
@@ -25,18 +25,8 @@ export default {
       return `#icon-${this.iconClass}`
     },
     svgClass () {
-      return this.className ? 'svg-icon ' + this.className : 'svg-icon'
+      return this.className ? 'app-svg-icon ' + this.className : 'app-svg-icon'
     }
   }
 }
 </script>
-
-<style lang="sass" scoped>
-  .svg-icon
-    width: 1em
-    height: 1em
-    font-size: 1.2em
-    vertical-align: -0.15em
-    fill: currentColor
-    overflow: hidden
-</style>
