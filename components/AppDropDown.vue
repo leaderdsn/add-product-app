@@ -3,10 +3,15 @@
     <button class="app-btn app-dropdown-btn" @click.stop="toggleDropdown">
       <span class="app-dropdown-btn-content">
         {{ sortKey }}
-        <span class="app-dropdown-btn-angle-down" :class="{'app-dropdown-btn-angle-down--selected': isDropdown }"></span>
+        <span
+          class="app-dropdown-btn-angle-down"
+          :class="{ 'app-dropdown-btn-angle-down--selected': isDropdown }"
+        ></span>
       </span>
       <ul v-if="isDropdown" class="app-dropdown-btn-list">
-        <li v-for="item in listKey" :key="item" @click.stop="selectItem">{{ item }}</li>
+        <li v-for="item in listKey" :key="item" @click.stop="selectItem">
+          {{ item }}
+        </li>
       </ul>
     </button>
   </div>
@@ -20,12 +25,7 @@ export default {
     return {
       isDropdown: false,
       sortKey: 'По умолчанию',
-      listKey: [
-        'По умолчанию',
-        'По наименованию',
-        'По цене min',
-        'По цене max'
-      ]
+      listKey: ['По умолчанию', 'По наименованию', 'По цене min', 'По цене max']
     }
   },
   mounted() {
@@ -40,11 +40,11 @@ export default {
       this.isDropdown = false
     },
     selectItem(e) {
-      const keyValue = e.target.innerHTML
+      const keyValue = e.target.innerHTML.trim()
       this.isDropdown = false
       this.sortKey = keyValue
       this.sortProducts(keyValue)
-    },
+    }
   }
 }
 </script>
