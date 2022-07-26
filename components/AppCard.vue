@@ -2,7 +2,10 @@
   <app-spinner v-if="isLoading" />
   <div v-else class="app-card">
     <div class="app-card-image">
-      <img :src="isNotFoundImage ? require('~/assets/img/not-found.webp') : urlImg" :alt="product.name"/>
+      <img
+        :src="isNotFoundImage ? require('~/assets/img/not-found.webp') : urlImg"
+        :alt="product.name"
+      />
     </div>
     <div class="app-card-data">
       <div class="app-card-title">{{ product.name }}</div>
@@ -25,19 +28,19 @@ export default {
     product: {
       type: Object,
       default: () => {}
-    },
+    }
   },
   data() {
     return {
       isLoading: true,
       urlImg: null,
-      isNotFoundImage: false,
+      isNotFoundImage: false
     }
   },
   computed: {
     thousandSeparator() {
-      return this.product.cost.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-    },
+      return this.product.cost.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+    }
   },
   async mounted() {
     await this.loadImage(this.product.url)
@@ -54,7 +57,7 @@ export default {
         this.isNotFoundImage = true
         this.isLoading = false
       }
-    },
+    }
   }
 }
 </script>

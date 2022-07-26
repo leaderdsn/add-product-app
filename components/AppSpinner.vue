@@ -17,6 +17,6 @@
 
 <script>
 export default {
-  name: 'AppSpinner',
+  name: 'AppSpinner'
 }
 </script>

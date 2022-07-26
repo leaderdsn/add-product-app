@@ -18,13 +18,13 @@ import { mapGetters } from 'vuex'
 import AppCard from '@/components/AppCard.vue'
 import AppDropdown from '@/components/AppDropdown.vue'
 export default {
-  name: "AppProducts",
+  name: 'AppProducts',
   components: {
     AppCard,
-    AppDropdown,
+    AppDropdown
   },
   computed: {
-    ...mapGetters({ products: 'localStorage/getProducts' }),
-  },
+    ...mapGetters({ products: 'localStorage/getProducts' })
+  }
 }
 </script>

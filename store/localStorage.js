@@ -37,6 +37,6 @@ export const mutations = {
 
 export const getters = {
   getProducts: (state) => {
-      return state.products
+    return state.products
   },
 }

@@ -12,8 +12,7 @@ export default {
   methods: {
     showSidebar() {
       this.$emit('showSidebar', true)
-    },
+    }
   }
-
 }
 </script>
