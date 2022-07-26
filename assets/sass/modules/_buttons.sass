@@ -1,0 +1,36 @@
+.app-btn
+  height: 36px
+  background: var(--default-color)
+  box-shadow: var(--button-shadow)
+  border-radius: 4px
+  border: 0
+  font-size: 12px
+  line-height: 15px
+  color: var(--text-disabled-color)
+  padding: 10px 16px
+  box-sizing: border-box
+  cursor: pointer
+  &:disabled
+    background: var(--disabled-color)
+    color: var(--text-disabled-color)
+    cursor: not-allowed
+  &:hover:not([disabled])
+    background: var(--hover-default-color)
+
+.app-btn-mobile
+  background: transparent
+  border: 0
+  padding: 0
+  color: var(--text-default-color)
+  cursor: pointer
+
+.app-btn-primary
+  background: var(--primary-color)
+  color: var(--text-primary-color)
+  transition: background 0.3s
+  &:disabled
+    background: var(--disabled-color)
+    color: var(--text-disabled-color)
+    cursor: not-allowed
+  &:hover:not([disabled])
+    background: var(--hover-primary-color)

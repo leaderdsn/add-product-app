@@ -1,0 +1,35 @@
+.app-products
+  display: flex
+  width: calc(100% - 348px)
+  margin-left: 348px
+  grid-gap: 16px
+  flex-direction: column
+  position: relative
+  &-panel
+    position: relative
+    background: transparent
+    display: flex
+    width: 100%
+    align-items: flex-end
+    justify-content: flex-end
+  &-list
+    display: flex
+    grid-gap: 16px
+    flex-wrap: wrap
+
+@media (max-width: 991px)
+  .app-products
+    margin-left: 0px
+    width: 100%
+    &-panel
+      position: relative
+      right: 0
+      height: auto
+      width: 100%
+    &-list
+      margin-top: 0
+
+@media (max-width: 575px)
+  .app-products
+    &-list
+      justify-content: center
