@@ -187,7 +187,6 @@ export default {
         this.addProduct(this.form)
         this.form = {}
         this.$v.form.$reset()
-        alert('Товар добавлен успешно!')
       }
     }
   }
