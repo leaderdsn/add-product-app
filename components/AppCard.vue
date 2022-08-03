@@ -49,14 +49,15 @@ export default {
     ...mapMutations({ removeProduct: 'localStorage/removeProduct' }),
     async loadImage(url) {
       this.isLoading = true
-      const response = await fetch(url)
-      if (response.ok) {
-        this.urlImg = url
-        this.isLoading = false
-      } else {
-        this.isNotFoundImage = true
-        this.isLoading = false
-      }
+      await fetch(url)
+        .then(() => {
+          this.urlImg = url
+          this.isLoading = false
+        })
+        .catch(() => {
+          this.isNotFoundImage = true
+          this.isLoading = false
+        })
     }
   }
 }
