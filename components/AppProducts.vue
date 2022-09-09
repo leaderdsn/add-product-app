@@ -1,7 +1,7 @@
 <template>
   <div class="app-products">
     <div class="app-products-panel">
-      <app-dropdown />
+      <AppDropDown :isPoducts="products.length !== 0"/>
     </div>
     <div class="app-products-list">
       <AppCard
@@ -16,12 +16,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import AppCard from '@/components/AppCard.vue'
-import AppDropdown from '@/components/AppDropdown.vue'
+import AppDropDown from '@/components/AppDropDown.vue'
 export default {
   name: 'AppProducts',
   components: {
     AppCard,
-    AppDropdown
+    AppDropDown
   },
   computed: {
     ...mapGetters({ products: 'localStorage/getProducts' })

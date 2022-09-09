@@ -1,14 +1,14 @@
 <template>
   <div class="app-dropdown">
-    <button class="app-btn app-dropdown-btn" @click.stop="toggleDropdown">
+    <button class="app-btn app-dropdown-btn" @click.stop="toggleDropDown">
       <span class="app-dropdown-btn-content">
         {{ sortKey }}
         <span
           class="app-dropdown-btn-angle-down"
-          :class="{ 'app-dropdown-btn-angle-down--selected': isDropdown }"
+          :class="{ 'app-dropdown-btn-angle-down--selected': isDropDown }"
         ></span>
       </span>
-      <ul v-if="isDropdown" class="app-dropdown-btn-list">
+      <ul v-if="isDropDown" class="app-dropdown-btn-list">
         <li v-for="item in listKey" :key="item" @click.stop="selectItem">
           {{ item }}
         </li>
@@ -20,30 +20,40 @@
 <script>
 import { mapMutations } from 'vuex'
 export default {
-  name: 'AppDropdown',
+  name: 'AppDropDown',
+  props: {
+    isPoducts: {
+      type: Boolean,
+      default: () => false
+    }
+  },
   data() {
     return {
-      isDropdown: false,
+      isDropDown: false,
       sortKey: 'По умолчанию',
       listKey: ['По умолчанию', 'По наименованию', 'По цене min', 'По цене max']
     }
   },
   mounted() {
-    document.addEventListener('click', () => this.hiddenDropdown())
+    if (this.isDropDown) {
+      document.addEventListener('click', () => this.hiddenDropdown())
+    }
   },
   methods: {
     ...mapMutations({ sortProducts: 'localStorage/sortProducts' }),
-    toggleDropdown() {
-      this.isDropdown = !this.isDropdown
+    toggleDropDown() {
+      this.isDropDown = !this.isDropDown
     },
-    hiddenDropdown() {
-      this.isDropdown = false
+    hiddenDropDown() {
+      this.isDropDown = false
     },
     selectItem(e) {
       const keyValue = e.target.innerHTML.trim()
-      this.isDropdown = false
+      this.isDropDown = false
       this.sortKey = keyValue
-      this.sortProducts(keyValue)
+      if (this.isPoducts) {
+        this.sortProducts(keyValue)
+      }
     }
   }
 }

@@ -49,7 +49,7 @@ export default {
     ...mapMutations({ removeProduct: 'localStorage/removeProduct' }),
     async loadImage(url) {
       this.isLoading = true
-      await fetch(url)
+      await fetch(url, {mode: 'no-cors'})
         .then(() => {
           this.urlImg = url
           this.isLoading = false
