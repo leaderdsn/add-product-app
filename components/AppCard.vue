@@ -3,8 +3,9 @@
   <div v-else class="app-card">
     <div class="app-card-image">
       <img
-        :src="isNotFoundImage ? require('~/assets/img/not-found.webp') : urlImg"
+        :src="urlImg"
         :alt="product.name"
+        @error="onErrorImage"
       />
     </div>
     <div class="app-card-data">
@@ -47,15 +48,14 @@ export default {
   },
   methods: {
     ...mapMutations({ removeProduct: 'localStorage/removeProduct' }),
+    onErrorImage(e) {
+      return e.target.src = require('~/assets/img/not-found.webp')
+    },
     async loadImage(url) {
       this.isLoading = true
       await fetch(url, {mode: 'no-cors'})
         .then(() => {
           this.urlImg = url
-          this.isLoading = false
-        })
-        .catch(() => {
-          this.isNotFoundImage = true
           this.isLoading = false
         })
     }
